@@ -47,3 +47,9 @@ Python3:
   6. sudo pip3 install lxml
   7. sudo pip3 install bs4
   8. python3 main3.py 1.txt
+  
+條件一: 近三個月營收年增率大於5%
+條件二: 近六個月營收年增率為正
+條件三: 最近一季的EPS為正
+第四畫出最近幾季的稅後淨利率平均
+
