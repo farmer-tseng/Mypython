@@ -11,6 +11,16 @@ import time
 import sys
 import os
 
+class bcolors:
+    HEADER      = '\033[95m'
+    OKBLUE      = '\033[94m'
+    OKGREEN     = '\033[92m'
+    WARNING     = '\033[93m'
+    FAIL        = '\033[91m'
+    ENDC        = '\033[0m'
+    BOLD        = '\033[1m'
+    UNDERLINE   = '\033[4m'
+
 def YoYPerMonth(ID, driver):
     tdTable = []
     ratioTable = []
@@ -24,7 +34,7 @@ def YoYPerMonth(ID, driver):
     except Exception as e:
         print ("Not found target")
         return False
-    print (soup.findAll("", {"href":"StockDetail.asp?STOCK_ID=" + ID})[1].get_text())
+    print (bcolors.HEADER + soup.findAll("", {"href":"StockDetail.asp?STOCK_ID=" + ID})[1].get_text() + bcolors.ENDC)
 #1
     for i in range(0, 6):
         for child in soup.find("tr", {"id": "row" + str(i)}).findAll("td"):
@@ -45,17 +55,17 @@ def YoYPerMonth(ID, driver):
 
     s = "月營收年增率 YoY"
     if (ratioTable[0] > 5) & (ratioTable[1] > 5) & (ratioTable[2] > 5):
-        print ("\n#1 (" + str(s) + ") Pass")        
+        print (bcolors.OKGREEN + "\n#1 (" + str(s) + ") Pass" + bcolors.ENDC)
     else:
-        print ("\n#1 (" + str(s) + ") Fail")
+        print (bcolors.FAIL + "\n#1 (" + str(s) + ") Fail" + bcolors.ENDC)
         return False
 
 #2
     ratioAvg = float(sum(ratioTable)) / len(ratioTable)
     if (min(ratioTable[0], ratioAvg) > 5):
-        print ("\n#2 Pass")
+        print (bcolors.OKGREEN + "\n#2 Pass" + bcolors.ENDC)
     else:
-        print ("\n#2 Fail 前六個月營收年增率平均 < 5%")
+        print (bcolors.FAIL + "\n#2 Fail 前六個月營收年增率平均 < 5%" + bcolors.ENDC)
         return False
     print ("ratio 1 : " + str(ratioTable[0]))
     print ("前六個月營收年增率平均 : " + str(ratioAvg))
@@ -77,13 +87,14 @@ def EPSandNetProfit(ID, driver, tdTable, ratioTable):
         if s == new_name:
             break
     if i >= 9:
-        print ("Can't find 每股稅後盈餘 (元)稅後淨利 / 發行股數\n")
+        print (bcolors.WARNING + "Can't find 每股稅後盈餘 (元)稅後淨利 / 發行股數\n" + bcolors.ENDC)
         return False
     eps = float(soup.find("tr", {"id": "row" + str(i)}).findAll("td")[1].get_text())
     if eps > 0:
-        print ("\n#3 (EPS) Pass")
+        print (bcolors.OKGREEN + "\n#3 (EPS) Pass" + bcolors.ENDC)
+
     else:
-        print ("\n#3 (EPS) Fail")
+        print (bcolors.FAIL + "\n#3 (EPS) Fail" + bcolors.ENDC)
         return False
 
     SeasonTable = []
@@ -112,7 +123,7 @@ def EPSandNetProfit(ID, driver, tdTable, ratioTable):
     i = 0
     if len(SeasonTable) <= 0:
         print ("SeasonTable is empty.")
-        sys.exit(1)
+        return False
     for ratio in tdTable:
         if ratio == "-":
             ratio = 0
@@ -160,9 +171,9 @@ for ID in target:
         ploty.append(avgRatio)
     growthRate = ploty[3] - ploty[0]
     if growthRate > 0:
-        print ("\n#4 Pass")
+        print (bcolors.OKGREEN + "\n#4 Pass" + bcolors.ENDC)
     else:
-        print ("\n#4 Fail")
+        print (bcolors.FAIL + "\n#4 Fail" + bcolors.ENDC)
     print ("Growth Rate Avg(4th) - Growth Rate Avg(1st)) : " + str(growthRate))
     for i in range(len(ploty)):
         print ("Growth Rate Avg Per 4 season(" + str(i+1) + ") : " + str(ploty[i]))
