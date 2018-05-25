@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -20,6 +21,9 @@ class bcolors:
     ENDC        = '\033[0m'
     BOLD        = '\033[1m'
     UNDERLINE   = '\033[4m'
+
+PassColor = bcolors.OKBLUE
+FailColor = bcolors.FAIL
 
 def YoYPerMonth(ID, driver):
     tdTable = []
@@ -55,17 +59,17 @@ def YoYPerMonth(ID, driver):
 
     s = "月營收年增率 YoY"
     if (ratioTable[0] > 5) & (ratioTable[1] > 5) & (ratioTable[2] > 5):
-        print (bcolors.OKGREEN + "\n#1 (" + str(s) + ") Pass" + bcolors.ENDC)
+        print (PassColor + "\n#1 (" + str(s) + ") Pass" + bcolors.ENDC)
     else:
-        print (bcolors.FAIL + "\n#1 (" + str(s) + ") Fail" + bcolors.ENDC)
+        print (FailColor + "\n#1 (" + str(s) + ") Fail" + bcolors.ENDC)
         return False
 
 #2
     ratioAvg = float(sum(ratioTable)) / len(ratioTable)
     if (min(ratioTable[0], ratioAvg) > 5):
-        print (bcolors.OKGREEN + "\n#2 Pass" + bcolors.ENDC)
+        print (PassColor + "\n#2 Pass" + bcolors.ENDC)
     else:
-        print (bcolors.FAIL + "\n#2 Fail 前六個月營收年增率平均 < 5%" + bcolors.ENDC)
+        print (FailColor + "\n#2 Fail 前六個月營收年增率平均 < 5%" + bcolors.ENDC)
         return False
     print ("ratio 1 : " + str(ratioTable[0]))
     print ("前六個月營收年增率平均 : " + str(ratioAvg))
@@ -91,10 +95,10 @@ def EPSandNetProfit(ID, driver, tdTable, ratioTable):
         return False
     eps = float(soup.find("tr", {"id": "row" + str(i)}).findAll("td")[1].get_text())
     if eps > 0:
-        print (bcolors.OKGREEN + "\n#3 (EPS) Pass" + bcolors.ENDC)
+        print (PassColor + "\n#3 (EPS) Pass" + bcolors.ENDC)
 
     else:
-        print (bcolors.FAIL + "\n#3 (EPS) Fail" + bcolors.ENDC)
+        print (FailColor + "\n#3 (EPS) Fail" + bcolors.ENDC)
         return False
 
     SeasonTable = []
@@ -139,9 +143,14 @@ if len(sys.argv) < 2:
     print ("Usage:", sys.argv[0], "<target file>")
     sys.exit(1)
 fileName = sys.argv[1]
-f = open(fileName, "rU")                                                        
-target = f.read().splitlines()  
-f.close()
+my_file = Path(fileName)
+target = []
+if my_file.is_file():
+    f = open(fileName, "rU")
+    target = f.read().splitlines()
+    f.close()
+else:
+    target.append(fileName)
 
 for ID in target:
     print ("\n===============================================================")
@@ -171,9 +180,9 @@ for ID in target:
         ploty.append(avgRatio)
     growthRate = ploty[3] - ploty[0]
     if growthRate > 0:
-        print (bcolors.OKGREEN + "\n#4 Pass" + bcolors.ENDC)
+        print (PassColor + "\n#4 Pass" + bcolors.ENDC)
     else:
-        print (bcolors.FAIL + "\n#4 Fail" + bcolors.ENDC)
+        print (FailColor + "\n#4 Fail" + bcolors.ENDC)
     print ("Growth Rate Avg(4th) - Growth Rate Avg(1st)) : " + str(growthRate))
     for i in range(len(ploty)):
         print ("Growth Rate Avg Per 4 season(" + str(i+1) + ") : " + str(ploty[i]))
