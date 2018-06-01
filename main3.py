@@ -135,6 +135,7 @@ def EPSandNetProfit(ID, driver, tdTable, ratioTable):
         else:
             ratioTable.append(float(ratio))
         print (str(SeasonTable[i]) + " 稅後淨利率 : " + str(ratioTable[-1]))
+        i += 1
 
     return True
 
