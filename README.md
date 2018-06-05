@@ -3,6 +3,7 @@
 Install packages
 
 [Ubuntu]
+
 python2:
   1. sudo apt-get install python-pip
   2. sudo pip install selenium
@@ -21,10 +22,12 @@ python3:
   2. sudo pip3 install selenium
   3. sudo pip3 install -U numpy
   4. sudo pip3 install matplotlib
-  5. sudo apt-get install python3-tk
-  6. python3 main3.py 1.txt
+  5. sudo pip3 install BeautifulSoup4
+  6. sudo apt-get install python3-tk
+  7. python3 main3.py 1.txt
 
 [Mac OS]
+
 python2:
   1. sudo easy_install pip
   2. sudo python -mpip install matplotlib
