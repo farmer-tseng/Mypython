@@ -95,10 +95,10 @@ def EPSandNetProfit(ID, driver, tdTable, ratioTable):
         return False
     eps = float(soup.find("tr", {"id": "row" + str(i)}).findAll("td")[1].get_text())
     if eps > 0:
-        print (PassColor + "\n#3 (EPS) Pass" + bcolors.ENDC)
+        print (PassColor + "\n#3 EPS: " + str(eps) + " Pass" + bcolors.ENDC)
 
     else:
-        print (FailColor + "\n#3 (EPS) Fail" + bcolors.ENDC)
+        print (FailColor + "\n#3 EPS: " + str(eps) + " Fail" + bcolors.ENDC)
         return False
 
     SeasonTable = []
@@ -146,6 +146,7 @@ if len(sys.argv) < 2:
 fileName = sys.argv[1]
 my_file = Path(fileName)
 target = []
+plot = False
 if my_file.is_file():
     f = open(fileName, "rU")
     target = f.read().splitlines()
@@ -188,11 +189,12 @@ for ID in target:
     for i in range(len(ploty)):
         print ("Growth Rate Avg Per 4 season(" + str(i+1) + ") : " + str(ploty[i]))
     plt.plot(plotx, ploty, '-o', label = ID)
+    plot = True
     print ('\n')
     driver.close()
- 
-plt.xticks(np.arange(1, 5))
-plt.legend()
-plt.savefig(fileName + ".png")
+if plot:
+    plt.xticks(np.arange(1, 5))
+    plt.legend()
+    plt.savefig(fileName + ".png")
 
 
