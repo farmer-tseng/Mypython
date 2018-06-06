@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import random
 import sys
 import os
 
@@ -159,11 +160,13 @@ for ID in target:
     print ("\nTarget : " + ID)
     driver = webdriver.Firefox()
 
+    time.sleep(random.randint(13,18))   #避免太密集被goodinfo封鎖
     if not YoYPerMonth(ID, driver):
         driver.close()
         continue
 
 #3
+    time.sleep(random.randint(3,8))   #避免太密集被goodinfo封鎖
     tdTable = []
     ratioTable = []
     if not EPSandNetProfit(ID, driver, tdTable, ratioTable):
